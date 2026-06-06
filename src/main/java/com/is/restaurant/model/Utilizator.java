@@ -16,6 +16,9 @@ public class Utilizator {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
@@ -51,12 +54,12 @@ public class Utilizator {
         this.password = password;
     }
 
+    public void setRole(String role) { this.role = role; }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+    public String getRole() { return role; }
 
-    public String getRole() {
-        return role;
-    }
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
 }

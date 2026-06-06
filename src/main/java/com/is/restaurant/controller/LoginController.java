@@ -26,22 +26,22 @@ public class LoginController {
 
     @PostMapping("/login")
     public String authenticate(
-            @RequestParam String username,
+            @RequestParam String email,
             @RequestParam String password,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        return utilizatorRepository.findByUsernameAndPassword(username, password)
+        return utilizatorRepository.findByEmailAndPassword(email, password)
                 .map(utilizator -> {
-                    session.setAttribute("loggedInUser", utilizator.getUsername());
+                    session.setAttribute("loggedInEmail", utilizator.getEmail());
                     session.setAttribute("loggedInUserId", utilizator.getId());
-
+                    session.setAttribute("loggedInUser", utilizator.getUsername());
                     session.setAttribute("isAdmin", "ADMIN".equalsIgnoreCase(utilizator.getRole()));
 
                     return "redirect:/";
                 })
                 .orElseGet(() -> {
-                    redirectAttributes.addFlashAttribute("loginError", "Numele de utilizator sau parola este incorectă.");
+                    redirectAttributes.addFlashAttribute("loginError", "Email-ul sau parola este incorectă.");
                     return "redirect:/login";
                 });
     }
@@ -62,7 +62,8 @@ public class LoginController {
     }
 
     @PostMapping("/add-personal")
-    public String salveazaPersonalInBD(@RequestParam String username,
+    public String salveazaPersonalInBD(@RequestParam String email,
+                                       @RequestParam String username,
                                        @RequestParam String password,
                                        @RequestParam String role,
                                        HttpSession session) {
@@ -72,6 +73,7 @@ public class LoginController {
         }
 
         Utilizator nouUtilizator = new Utilizator();
+        nouUtilizator.setEmail(email);
         nouUtilizator.setUsername(username);
         nouUtilizator.setPassword(password);
         nouUtilizator.setRole(role);

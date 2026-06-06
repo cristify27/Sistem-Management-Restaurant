@@ -46,7 +46,7 @@
         <button th:if="${isLoggedIn}" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdauga">
             Adaugă Produs / Categorie
         </button>
-        <a th:if="${isLoggedIn and isAdmin}" href="/add-personal" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdauga">Add personal</a>
+        <a th:if="${isLoggedIn and isAdmin}" href="/add-personal" class="btn btn-primary">Add personal</a>
         <a th:if="${isLoggedIn}" href="/logout" class="btn btn-outline-danger">Log out</a>
         <a th:unless="${isLoggedIn}" href="/login" class="btn btn-outline-primary">Log in</a>
     </div>

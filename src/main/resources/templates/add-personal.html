@@ -17,25 +17,30 @@
                     <form th:action="@{/add-personal}" method="post">
 
                         <div class="mb-3">
-                            <label for="username" class="form-label">Nume utilizator (Username)</label>
-                            <input type="text" id="username" name="username" class="form-control" required placeholder="Ex: ionut123">
+                            <label for="email" class="form-label">Adresă Email (Folosit la Login)</label>
+                            <input type="email" id="email" name="email" class="form-control" required placeholder="Ex: ion@restaurant.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nume utilizator (Username afișat)</label>
+                            <input type="text" id="username" name="username" class="form-control" required placeholder="Ex: ionut99">
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Parolă</label>
-                            <input type="password" id="password" name="password" class="form-control" required placeholder="*******">
+                            <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
                         </div>
 
                         <div class="mb-4">
                             <label for="role" class="form-label">Rol în sistem</label>
                             <select id="role" name="role" class="form-select">
-                                <option value="USER">OSPATAR</option>
-                                <option value="ADMIN">CHEF</option>
+                                <option value="USER">User (Angajat normal / Ospătar)</option>
+                                <option value="ADMIN">Admin (Manager)</option>
                             </select>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-success w-100">Salvează</button>
+                            <button type="submit" class="btn btn-success w-100">Salvează în BD</button>
                             <a href="/" class="btn btn-outline-secondary w-100">Anulează</a>
                         </div>
 

@@ -6,6 +6,5 @@ INSERT INTO produse (denumire, categorie, pret, ingrediente, este_picant, este_v
 ('Pesto', 'Aperitive', 22.0, 'Pâine prăjită, busuioc, parmezan, muguri de pin, ulei de măsline', false, true, true),
 ('Bruschete cu somon', 'Aperitive', 30.0, 'Pâine prăjită, somon afumat, cremă de brânză', false, false, true);
 
-INSERT INTO utilizatori (username, password, role) VALUES
-('ADMIN', 'a123', 'ADMIN'),
-('Mircea', '123', 'OSPATAR');
+INSERT INTO utilizatori (email, username, password, role) VALUES
+('admin@restaurant.null', 'ADMIN', 'adminRestaurantMagic12', 'ADMIN')
