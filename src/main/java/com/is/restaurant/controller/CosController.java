@@ -24,36 +24,32 @@ public class CosController {
     @Autowired
     private ComandaRepository comandaRepository;
 
-    // Adaugă un produs în coșul stocat în sesiune
+    // Adaugă un produs disponibil în coșul stocat în sesiune.
+    // Clientul nu trebuie să fie autentificat pentru a adăuga produse în coș.
     @PostMapping("/adauga-cos/{id}")
     public String adaugaInCos(@PathVariable Long id, HttpSession session) {
-        // Restricție: doar personalul (utilizator autentificat) poate adăuga produse
-        if (session.getAttribute("loggedInUser") == null) {
-            return "redirect:/login";
-        }
-
         Produs produs = produsRepository.findById(id).orElse(null);
-        if (produs != null) {
-            // Luăm coșul curent din sesiune, sau creăm unul nou dacă nu există
+
+        if (produs != null && produs.isEsteDisponibil()) {
             List<Produs> cos = (List<Produs>) session.getAttribute("cos");
+
             if (cos == null) {
                 cos = new ArrayList<>();
             }
+
             cos.add(produs);
-            session.setAttribute("cos", cos); // Salvăm înapoi în sesiune
+            session.setAttribute("cos", cos);
         }
-        return "redirect:/"; // Îl trimitem înapoi la meniu după ce adaugă
+
+        return "redirect:/";
     }
 
-    // Afișează pagina cu coșul de cumpărături
+    // Afișează pagina cu coșul de cumpărături.
+    // Clientul nu trebuie să fie autentificat pentru a vedea coșul.
     @GetMapping("/cos")
     public String afiseazaCos(HttpSession session, Model model) {
-        // Restricție: doar personalul autentificat poate accesa coșul
-        if (session.getAttribute("loggedInUser") == null) {
-            return "redirect:/login";
-        }
-
         List<Produs> cos = (List<Produs>) session.getAttribute("cos");
+
         if (cos == null) {
             cos = new ArrayList<>();
         }
@@ -62,29 +58,27 @@ public class CosController {
 
         model.addAttribute("produseCos", cos);
         model.addAttribute("totalPlata", total);
+
         return "cos";
     }
 
-    // Transformă coșul din sesiune într-o Comandă reală în baza de date
+    // Transformă coșul din sesiune într-o comandă reală în baza de date.
+    // Clientul poate plasa comanda fără autentificare.
     @PostMapping("/plaseaza-comanda")
     public String plaseazaComanda(HttpSession session) {
-        // Restricție: doar personalul autentificat poate plasa comenzi
-        if (session.getAttribute("loggedInUser") == null) {
-            return "redirect:/login";
-        }
-
         List<Produs> cos = (List<Produs>) session.getAttribute("cos");
 
         if (cos != null && !cos.isEmpty()) {
             Comanda comandaNoua = new Comanda();
-            comandaNoua.setProduse(new ArrayList<>(cos)); // Adăugăm produsele
+            comandaNoua.setProduse(new ArrayList<>(cos));
             comandaNoua.calculeazaTotal();
             comandaNoua.setStatus("În așteptare");
 
-            comandaRepository.save(comandaNoua); // Salvăm în baza de date
+            comandaRepository.save(comandaNoua);
 
-            session.removeAttribute("cos"); // Golim coșul după comandă
+            session.removeAttribute("cos");
         }
+
         return "redirect:/?comandaPlasata=true";
     }
 }
