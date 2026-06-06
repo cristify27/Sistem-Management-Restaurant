@@ -33,6 +33,7 @@
                 <th>Actualizare status</th>
                 <th>Timp estimat</th>
                 <th>Metodă plată</th>
+                <th>Confirmare plată</th>
                 <th>Număr chitanță</th>
             </tr>
             </thead>
@@ -107,12 +108,34 @@
 
                 <td>
                     <span th:if="${comanda.metodaPlata != null}"
+                          class="badge bg-info text-dark"
                           th:text="${comanda.metodaPlata}">
                         Card
                     </span>
 
                     <span th:unless="${comanda.metodaPlata != null}" class="text-muted">
                         Neachitată
+                    </span>
+                </td>
+
+                <td>
+                    <form th:if="${comanda.numarChitanta == null}"
+                          th:action="@{/comenzi/{id}/plata(id=${comanda.id})}"
+                          method="post"
+                          class="d-flex gap-2">
+
+                        <select name="metodaPlata" class="form-select form-select-sm">
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-sm btn-success">
+                            Confirmă plata
+                        </button>
+                    </form>
+
+                    <span th:unless="${comanda.numarChitanta == null}" class="badge bg-success">
+                        Plată confirmată
                     </span>
                 </td>
 

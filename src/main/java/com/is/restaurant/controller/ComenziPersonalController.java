@@ -56,4 +56,33 @@ public class ComenziPersonalController {
 
         return "redirect:/comenzi";
     }
+
+    @PostMapping("/comenzi/{id}/plata")
+    public String confirmaPlataComanda(@PathVariable Long id,
+                                       @RequestParam String metodaPlata,
+                                       HttpSession session) {
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/login";
+        }
+
+        Comanda comanda = comandaVizualizareRepository.findById(id).orElse(null);
+
+        if (comanda != null) {
+            if (metodaPlata.equals("Cash") || metodaPlata.equals("Card")) {
+                comanda.setMetodaPlata(metodaPlata);
+
+                if (comanda.getNumarChitanta() == null || comanda.getNumarChitanta().isBlank()) {
+                    comanda.setNumarChitanta(genereazaNumarChitanta(comanda.getId()));
+                }
+
+                comandaVizualizareRepository.save(comanda);
+            }
+        }
+
+        return "redirect:/comenzi";
+    }
+
+    private String genereazaNumarChitanta(Long idComanda) {
+        return "CH-" + idComanda + "-" + System.currentTimeMillis();
+    }
 }
