@@ -27,6 +27,11 @@ public class CosController {
     // Adaugă un produs în coșul stocat în sesiune
     @PostMapping("/adauga-cos/{id}")
     public String adaugaInCos(@PathVariable Long id, HttpSession session) {
+        // Restricție: doar personalul (utilizator autentificat) poate adăuga produse
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/login";
+        }
+
         Produs produs = produsRepository.findById(id).orElse(null);
         if (produs != null) {
             // Luăm coșul curent din sesiune, sau creăm unul nou dacă nu există
@@ -43,6 +48,11 @@ public class CosController {
     // Afișează pagina cu coșul de cumpărături
     @GetMapping("/cos")
     public String afiseazaCos(HttpSession session, Model model) {
+        // Restricție: doar personalul autentificat poate accesa coșul
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/login";
+        }
+
         List<Produs> cos = (List<Produs>) session.getAttribute("cos");
         if (cos == null) {
             cos = new ArrayList<>();
@@ -58,6 +68,11 @@ public class CosController {
     // Transformă coșul din sesiune într-o Comandă reală în baza de date
     @PostMapping("/plaseaza-comanda")
     public String plaseazaComanda(HttpSession session) {
+        // Restricție: doar personalul autentificat poate plasa comenzi
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/login";
+        }
+
         List<Produs> cos = (List<Produs>) session.getAttribute("cos");
 
         if (cos != null && !cos.isEmpty()) {

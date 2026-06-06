@@ -30,39 +30,72 @@
             display: flex;
             gap: 8px;
         }
+        .filter-icon {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
     </style>
 </head>
 <body class="bg-light">
 
 <div class="container mt-5">
-    <h1 class="text-center mb-5">Meniul Nostru</h1>
+    <h1 class="text-center mb-4">Meniul Nostru</h1>
 
     <div class="actiuni-dreapta-sus">
+        <button th:if="${isLoggedIn}" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdauga">
+            Adaugă Produs / Categorie
+        </button>
+        <a th:if="${isLoggedIn and isAdmin}" href="/add-personal" class="btn btn-primary">Add personal</a>
         <a th:if="${isLoggedIn}" href="/logout" class="btn btn-outline-danger">Log out</a>
         <a th:unless="${isLoggedIn}" href="/login" class="btn btn-outline-primary">Log in</a>
-        <a th:if="${isLoggedIn and isAdmin}" href="/add-personal" class="btn btn-primary me-2">Add personal</a>
     </div>
-    <div class="text-end mb-3">
-        <a href="/cos" class="btn btn-warning">🛒 Vezi Coșul</a>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="dropdownFiltru" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                <svg class="filter-icon" viewBox="0 0 24 24">
+                    <path d="M4.25 5.61C6.27 8.2 10 13 10 13v6c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-6s3.72-4.8 5.74-7.39A.998.998 0 0 0 18.95 4H5.04c-.83 0-1.3.95-.79 1.61z"/>
+                </svg>
+                Filtrează
+            </button>
+
+            <form action="/" method="GET" class="dropdown-menu p-3 shadow" aria-labelledby="dropdownFiltru" style="width: 250px;">
+                <h6 class="dropdown-header px-0 text-dark fw-bold">Selectează categorii:</h6>
+
+                <div th:each="cat : ${categorii}" class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="categorie" th:value="${cat}" th:id="'cat_' + ${cat}"
+                           th:checked="${categoriiSelectate != null and categoriiSelectate.contains(cat)}">
+                    <label class="form-check-label" th:for="'cat_' + ${cat}" th:text="${cat}"></label>
+                </div>
+
+                <hr class="dropdown-divider">
+                <button type="submit" class="btn btn-primary btn-sm w-100 mb-2">Aplică</button>
+                <a href="/" class="btn btn-outline-secondary btn-sm w-100">Resetează</a>
+            </form>
+        </div>
+
+        <div th:if="${isLoggedIn}">
+            <a href="/cos" class="btn btn-warning">🛒 Vezi Coșul</a>
+        </div>
     </div>
 
     <div class="row">
         <div class="col-md-4 mb-4" th:each="produs : ${listaProduse}" th:if="${produs.esteDisponibil}">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body">
-                    <span class="badge bg-secondary mb-2" th:text="${produs.categorie}">Categorie</span>
+                    <span class="badge bg-secondary mb-2" th:text="${produs.categorie}"></span>
 
-                    <h5 class="card-title fw-bold" th:text="${produs.denumire}">Nume Produs</h5>
-                    <p class="card-text text-success fs-5" th:text="${produs.pret + ' RON'}">Pret</p>
+                    <h5 class="card-title fw-bold" th:text="${produs.denumire}"></h5>
+                    <p class="card-text text-success fs-5" th:text="${produs.pret + ' RON'}"></p>
 
-                    <div class="d-flex justify-content-between mt-3">
-                        <form th:action="@{/adauga-cos/{id}(id=${produs.id})}" method="post" class="m-0 p-0">
+                    <div class="d-flex justify-content-between mt-3 align-items-center">
+                        <form th:if="${isLoggedIn}" th:action="@{/adauga-cos/{id}(id=${produs.id})}" method="post" class="m-0 p-0">
                             <button type="submit" class="btn btn-primary btn-sm">Adaugă în coș</button>
                         </form>
 
-                        <button class="btn btn-outline-info btn-sm"
-                                data-bs-toggle="modal"
-                                th:data-bs-target="'#modalProdus' + ${produs.id}">Detalii</button>
+                        <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal" th:data-bs-target="'#modalProdus' + ${produs.id}">Detalii</button>
                     </div>
                 </div>
             </div>
@@ -71,14 +104,14 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title fw-bold" th:text="'Detalii: ' + ${produs.denumire}">Detalii</h5>
+                            <h5 class="modal-title fw-bold" th:text="'Detalii: ' + ${produs.denumire}"></h5>
                             <button type="button" class="buton-x-rosu" data-bs-dismiss="modal">X</button>
                         </div>
                         <div class="modal-body">
                             <p><strong>Ingrediente:</strong> <span th:text="${produs.ingrediente}"></span></p>
 
                             <div th:if="${produs.estePicant}" class="alert alert-danger p-2 mt-2">
-                                 <strong>Atenție:</strong> Acest produs este picant!
+                                <strong>Atenție:</strong> Acest produs este picant!
                             </div>
                             <div th:if="${produs.esteVegetarian}" class="alert alert-success p-2 mt-2">
                                 <strong>Informație:</strong> Produs vegetarian.
@@ -87,7 +120,57 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
+<div th:if="${isLoggedIn}" class="modal fade" id="modalAdauga" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/adauga-produs" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Adaugă Articol Nou</h5>
+                    <button type="button" class="buton-x-rosu" data-bs-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Denumire Produs</label>
+                        <input type="text" name="denumire" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Categorie</label>
+                        <input type="text" name="categorie" class="form-control" list="listaCategorii" placeholder="Alege sau scrie o categorie nouă..." required>
+                        <datalist id="listaCategorii">
+                            <option th:each="cat : ${categorii}" th:value="${cat}"></option>
+                        </datalist>
+                        <small class="text-muted">Pentru a adăuga o categorie nouă, pur și simplu scrie-i numele aici.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Preț (RON)</label>
+                        <input type="number" step="0.5" name="pret" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ingrediente</label>
+                        <textarea name="ingrediente" class="form-control" rows="2" required></textarea>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="estePicant" value="true" id="checkPicant">
+                        <label class="form-check-label" for="checkPicant">Acest produs este picant</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="esteVegetarian" value="true" id="checkVegetarian">
+                        <label class="form-check-label" for="checkVegetarian">Acest produs este vegetarian</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success w-100">Salvează Produsul</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
