@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Meniu Restaurant Magic</title>
@@ -22,6 +22,14 @@
         .buton-x-rosu:hover {
             background-color: darkred;
         }
+        .actiuni-dreapta-sus {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: flex;
+            gap: 8px;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -29,6 +37,11 @@
 <div class="container mt-5">
     <h1 class="text-center mb-5">Meniul Nostru</h1>
 
+    <div class="actiuni-dreapta-sus">
+        <a th:if="${isLoggedIn}" href="/logout" class="btn btn-outline-danger">Log out</a>
+        <a th:unless="${isLoggedIn}" href="/login" class="btn btn-outline-primary">Log in</a>
+        <a th:if="${isLoggedIn and isAdmin}" href="/add-personal" class="btn btn-primary me-2">Add personal</a>
+    </div>
     <div class="text-end mb-3">
         <a href="/cos" class="btn btn-warning">🛒 Vezi Coșul</a>
     </div>

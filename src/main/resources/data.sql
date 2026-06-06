@@ -5,3 +5,7 @@ INSERT INTO produse (denumire, categorie, pret, ingrediente, este_picant, este_v
 ('Bruschete cu roșii', 'Aperitive', 20.0, 'Pâine prăjită, roșii, usturoi, ulei de măsline', false, true, true),
 ('Pesto', 'Aperitive', 22.0, 'Pâine prăjită, busuioc, parmezan, muguri de pin, ulei de măsline', false, true, true),
 ('Bruschete cu somon', 'Aperitive', 30.0, 'Pâine prăjită, somon afumat, cremă de brânză', false, false, true);
+
+INSERT INTO utilizatori (username, password, role) VALUES
+('ADMIN', 'a123', 'ADMIN'),
+('Mircea', '123', 'OSPATAR');
