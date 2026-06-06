@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -29,5 +32,28 @@ public class ComenziPersonalController {
         model.addAttribute("isAdmin", Boolean.TRUE.equals(session.getAttribute("isAdmin")));
 
         return "comenzi";
+    }
+
+    @PostMapping("/comenzi/{id}/status")
+    public String actualizeazaStatusComanda(@PathVariable Long id,
+                                            @RequestParam String status,
+                                            HttpSession session) {
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/login";
+        }
+
+        Comanda comanda = comandaVizualizareRepository.findById(id).orElse(null);
+
+        if (comanda != null) {
+            if (status.equals("În așteptare") ||
+                    status.equals("Preparare") ||
+                    status.equals("Servită")) {
+
+                comanda.setStatus(status);
+                comandaVizualizareRepository.save(comanda);
+            }
+        }
+
+        return "redirect:/comenzi";
     }
 }

@@ -30,6 +30,7 @@
                 <th>Produse</th>
                 <th>Total plată</th>
                 <th>Status</th>
+                <th>Actualizare status</th>
                 <th>Timp estimat</th>
                 <th>Metodă plată</th>
                 <th>Număr chitanță</th>
@@ -55,9 +56,42 @@
 
                 <td>
                     <span class="badge bg-warning text-dark"
+                          th:if="${comanda.status == 'În așteptare'}"
                           th:text="${comanda.status}">
                         În așteptare
                     </span>
+
+                    <span class="badge bg-primary"
+                          th:if="${comanda.status == 'Preparare'}"
+                          th:text="${comanda.status}">
+                        Preparare
+                    </span>
+
+                    <span class="badge bg-success"
+                          th:if="${comanda.status == 'Servită'}"
+                          th:text="${comanda.status}">
+                        Servită
+                    </span>
+                </td>
+
+                <td>
+                    <form th:action="@{/comenzi/{id}/status(id=${comanda.id})}" method="post" class="d-flex gap-2">
+                        <select name="status" class="form-select form-select-sm">
+                            <option value="În așteptare" th:selected="${comanda.status == 'În așteptare'}">
+                                În așteptare
+                            </option>
+                            <option value="Preparare" th:selected="${comanda.status == 'Preparare'}">
+                                Preparare
+                            </option>
+                            <option value="Servită" th:selected="${comanda.status == 'Servită'}">
+                                Servită
+                            </option>
+                        </select>
+
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            Salvează
+                        </button>
+                    </form>
                 </td>
 
                 <td>
