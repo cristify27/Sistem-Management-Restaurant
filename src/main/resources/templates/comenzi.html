@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Comenzi Restaurant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Comenzi înregistrate</h1>
+
+        <div class="d-flex gap-2">
+            <a href="/" class="btn btn-outline-secondary">Înapoi la meniu</a>
+            <a href="/logout" class="btn btn-outline-danger">Log out</a>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(comenzi)}" class="alert alert-info">
+        Nu există comenzi înregistrate momentan.
+    </div>
+
+    <div th:unless="${#lists.isEmpty(comenzi)}" class="table-responsive">
+        <table class="table table-bordered table-hover align-middle bg-white shadow-sm">
+            <thead class="table-dark">
+            <tr>
+                <th>ID comandă</th>
+                <th>Produse</th>
+                <th>Total plată</th>
+                <th>Status</th>
+                <th>Timp estimat</th>
+                <th>Metodă plată</th>
+                <th>Număr chitanță</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="comanda : ${comenzi}">
+                <td th:text="${comanda.id}">1</td>
+
+                <td>
+                    <ul class="mb-0">
+                        <li th:each="produs : ${comanda.produse}"
+                            th:text="|${produs.denumire} - ${produs.pret} RON|">
+                            Produs - 0 RON
+                        </li>
+                    </ul>
+                </td>
+
+                <td>
+                    <strong th:text="|${comanda.totalPlata} RON|">0 RON</strong>
+                </td>
+
+                <td>
+                    <span class="badge bg-warning text-dark"
+                          th:text="${comanda.status}">
+                        În așteptare
+                    </span>
+                </td>
+
+                <td>
+                    <span th:if="${comanda.timpEstimare > 0}"
+                          th:text="|${comanda.timpEstimare} minute|">
+                        0 minute
+                    </span>
+
+                    <span th:unless="${comanda.timpEstimare > 0}" class="text-muted">
+                        Nesetat
+                    </span>
+                </td>
+
+                <td>
+                    <span th:if="${comanda.metodaPlata != null}"
+                          th:text="${comanda.metodaPlata}">
+                        Card
+                    </span>
+
+                    <span th:unless="${comanda.metodaPlata != null}" class="text-muted">
+                        Neachitată
+                    </span>
+                </td>
+
+                <td>
+                    <span th:if="${comanda.numarChitanta != null}"
+                          th:text="${comanda.numarChitanta}">
+                        CH-001
+                    </span>
+
+                    <span th:unless="${comanda.numarChitanta != null}" class="text-muted">
+                        Neemisă
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
