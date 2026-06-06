@@ -48,6 +48,7 @@ public class MeniuController {
         return "meniu";
     }
 
+    // 1. Am securizat metoda de adăugare exclusiv pentru admin
     @PostMapping("/adauga-produs")
     public String adaugaProdus(
             @RequestParam String denumire,
@@ -58,12 +59,43 @@ public class MeniuController {
             @RequestParam(required = false) boolean esteVegetarian,
             HttpSession session) {
 
-        if (session.getAttribute("loggedInUser") == null) {
-            return "redirect:/login";
+        Object isAdminAttribute = session.getAttribute("isAdmin");
+        if (session.getAttribute("loggedInUser") == null || !Boolean.TRUE.equals(isAdminAttribute)) {
+            return "redirect:/";
         }
 
         Produs produsNou = new Produs(denumire, categorie, pret, ingrediente, estePicant, esteVegetarian);
         produsRepository.save(produsNou);
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/modifica-produs/{id}")
+    public String modificaProdus(
+            @org.springframework.web.bind.annotation.PathVariable Long id,
+            @RequestParam String denumire,
+            @RequestParam String categorie,
+            @RequestParam double pret,
+            @RequestParam String ingrediente,
+            @RequestParam(required = false) boolean estePicant,
+            @RequestParam(required = false) boolean esteVegetarian,
+            HttpSession session) {
+
+        Object isAdminAttribute = session.getAttribute("isAdmin");
+        if (session.getAttribute("loggedInUser") == null || !Boolean.TRUE.equals(isAdminAttribute)) {
+            return "redirect:/";
+        }
+
+        produsRepository.findById(id).ifPresent(produs -> {
+            produs.setDenumire(denumire);
+            produs.setCategorie(categorie);
+            produs.setPret(pret);
+            produs.setIngrediente(ingrediente);
+            produs.setEstePicant(estePicant);
+            produs.setEsteVegetarian(esteVegetarian);
+
+            produsRepository.save(produs);
+        });
 
         return "redirect:/";
     }

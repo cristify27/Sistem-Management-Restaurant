@@ -7,7 +7,7 @@
     <style>
         .buton-x-rosu {
             background-color: red;
-            color: white;
+            color: #f4f4f4;
             width: 32px;
             height: 32px;
             border: none;
@@ -33,7 +33,25 @@
         .filter-icon {
             width: 24px;
             height: 24px;
-            fill: white;
+            fill: #f4f4f4;
+        }
+        .btn-admin {
+            background-color: #f4f4f4;
+            color: #0dc5fd;
+            border: 2px solid #0dc5fd;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-admin:hover {
+            background-color: #0dc5fd;
+            color: white;
+            border-color: #0dc5fd;
+        }
+        .btn-adauga {
+            background-color: #0dc5fd;
+            color: white;
+            border-color: #0dc5fd;
         }
     </style>
 </head>
@@ -43,10 +61,10 @@
     <h1 class="text-center mb-4">Meniul Nostru</h1>
 
     <div class="actiuni-dreapta-sus">
-        <button th:if="${isLoggedIn}" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdauga">
+        <button th:if="${isAdmin}" class="btn btn-admin" data-bs-toggle="modal" data-bs-target="#modalAdauga">
             Adaugă Produs / Categorie
         </button>
-        <a th:if="${isLoggedIn and isAdmin}" href="/add-personal" class="btn btn-primary">Add personal</a>
+        <a th:if="${isLoggedIn and isAdmin}" href="/add-personal" class="btn btn-admin">Add personal</a>
         <a th:if="${isLoggedIn}" href="/logout" class="btn btn-outline-danger">Log out</a>
         <a th:unless="${isLoggedIn}" href="/login" class="btn btn-outline-primary">Log in</a>
     </div>
@@ -90,12 +108,16 @@
                     <h5 class="card-title fw-bold" th:text="${produs.denumire}"></h5>
                     <p class="card-text text-success fs-5" th:text="${produs.pret + ' RON'}"></p>
 
-                    <div class="d-flex justify-content-between mt-3 align-items-center">
+                    <div class="d-flex justify-content-between mt-3 align-items-center flex-wrap gap-2">
                         <form th:action="@{/adauga-cos/{id}(id=${produs.id})}" method="post" class="m-0 p-0">
-                            <button type="submit" class="btn btn-primary btn-sm">Adaugă în coș</button>
+                            <button type="submit" class="btn btn-adauga">Adaugă în coș</button>
                         </form>
 
-                        <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal" th:data-bs-target="'#modalProdus' + ${produs.id}">Detalii</button>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-adauga" data-bs-toggle="modal" th:data-bs-target="'#modalProdus' + ${produs.id}">Detalii</button>
+
+                            <button th:if="${isLoggedIn and isAdmin}" class="btn btn-warning btn-sm" data-bs-toggle="modal" th:data-bs-target="'#modalModifica' + ${produs.id}">Modifică</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,17 +131,60 @@
                         </div>
                         <div class="modal-body">
                             <p><strong>Ingrediente:</strong> <span th:text="${produs.ingrediente}"></span></p>
-
-                            <div th:if="${produs.estePicant}" class="alert alert-danger p-2 mt-2">
-                                <strong>Atenție:</strong> Acest produs este picant!
-                            </div>
-                            <div th:if="${produs.esteVegetarian}" class="alert alert-success p-2 mt-2">
-                                <strong>Informație:</strong> Produs vegetarian.
-                            </div>
+                            <div th:if="${produs.estePicant}" class="alert alert-danger p-2 mt-2"><strong>Atenție:</strong> Acest produs este picant!</div>
+                            <div th:if="${produs.esteVegetarian}" class="alert alert-success p-2 mt-2"><strong>Informație:</strong> Produs vegetarian.</div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div th:if="${isLoggedIn and isAdmin}" class="modal fade" th:id="'modalModifica' + ${produs.id}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form th:action="@{/modifica-produs/{id}(id=${produs.id})}" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold">Modifică Produs: <span th:text="${produs.denumire}"></span></h5>
+                                <button type="button" class="buton-x-rosu" data-bs-dismiss="modal">X</button>
+                            </div>
+                            <div class="modal-body text-start">
+                                <div class="mb-3">
+                                    <label class="form-label">Denumire Produs</label>
+                                    <input type="text" name="denumire" class="form-control" th:value="${produs.denumire}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Categorie</label>
+                                    <input type="text" name="categorie" class="form-control" list="listaCategorii" th:value="${produs.categorie}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Preț (RON)</label>
+                                    <input type="number" step="0.5" name="pret" class="form-control" th:value="${produs.pret}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Ingrediente</label>
+                                    <textarea name="ingrediente" class="form-control" rows="2" th:text="${produs.ingrediente}" required></textarea>
+                                </div>
+
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="estePicant" value="true" th:id="'editPicant' + ${produs.id}" th:checked="${produs.estePicant}">
+                                    <label class="form-check-label" th:for="'editPicant' + ${produs.id}">Acest produs este picant</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="esteVegetarian" value="true" th:id="'editVegetarian' + ${produs.id}" th:checked="${produs.esteVegetarian}">
+                                    <label class="form-check-label" th:for="'editVegetarian' + ${produs.id}">Acest produs este vegetarian</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-warning w-100">Salvează Modificările</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
