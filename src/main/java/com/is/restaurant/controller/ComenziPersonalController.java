@@ -83,16 +83,14 @@ public class ComenziPersonalController {
 
         Comanda comanda = comandaVizualizareRepository.findById(id).orElse(null);
 
-        if (comanda != null) {
-            if (metodaPlata.equals("Cash") || metodaPlata.equals("Card")) {
-                comanda.setMetodaPlata(metodaPlata);
+        if (comanda != null
+                && "Servită".equals(comanda.getStatus())
+                && (comanda.getNumarChitanta() == null || comanda.getNumarChitanta().isBlank())
+                && (metodaPlata.equals("Cash") || metodaPlata.equals("Card"))) {
 
-                if (comanda.getNumarChitanta() == null || comanda.getNumarChitanta().isBlank()) {
-                    comanda.setNumarChitanta(genereazaNumarChitanta(comanda.getId()));
-                }
-
-                comandaVizualizareRepository.save(comanda);
-            }
+            comanda.setMetodaPlata(metodaPlata);
+            comanda.setNumarChitanta(genereazaNumarChitanta(comanda.getId()));
+            comandaVizualizareRepository.save(comanda);
         }
 
         return "redirect:/comenzi";

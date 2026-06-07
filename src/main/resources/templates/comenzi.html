@@ -127,7 +127,7 @@
                 </td>
 
                 <td>
-                    <form th:if="${comanda.numarChitanta == null}"
+                    <form th:if="${comanda.numarChitanta == null and comanda.status == 'Servită'}"
                           th:action="@{/comenzi/{id}/plata(id=${comanda.id})}"
                           method="post"
                           class="d-flex gap-2">
@@ -142,7 +142,11 @@
                         </button>
                     </form>
 
-                    <span th:unless="${comanda.numarChitanta == null}" class="badge bg-success">
+                    <span th:if="${comanda.numarChitanta == null and comanda.status != 'Servită'}" class="text-muted small">
+                        Marcați comanda ca Servită
+                    </span>
+
+                    <span th:if="${comanda.numarChitanta != null}" class="badge bg-success">
                         Plată confirmată
                     </span>
                 </td>

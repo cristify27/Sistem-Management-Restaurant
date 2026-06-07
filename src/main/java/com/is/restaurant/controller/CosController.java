@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +59,7 @@ public class CosController {
     }
 
     @PostMapping("/plaseaza-comanda")
-    public String plaseazaComanda(@RequestParam String metodaPlata, HttpSession session) {
+    public String plaseazaComanda(HttpSession session) {
         List<Produs> cos = (List<Produs>) session.getAttribute("cos");
 
         if (cos != null && !cos.isEmpty()) {
@@ -68,11 +67,6 @@ public class CosController {
             comandaNoua.setProduse(new ArrayList<>(cos));
             comandaNoua.calculeazaTotal();
             comandaNoua.setStatus("În așteptare");
-            comandaNoua.setMetodaPlata(metodaPlata);
-
-            if (metodaPlata.equals("Cash") || metodaPlata.equals("Card")) {
-                comandaNoua.setNumarChitanta("CH-" + System.currentTimeMillis());
-            }
 
             comandaRepository.save(comandaNoua);
 
