@@ -14,30 +14,26 @@
                 <div class="card-body p-4">
                     <h2 class="text-center mb-4 fw-bold">Adaugă Membru Personal</h2>
 
+                    <div th:if="${personalAdaugat}" class="alert alert-success" th:text="${personalAdaugat}"></div>
+
                     <form th:action="@{/add-personal}" method="post">
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Adresă Email (Folosit la Login)</label>
+                            <label for="email" class="form-label">Adresă Email (contact)</label>
                             <input type="email" id="email" name="email" class="form-control" required placeholder="Ex: ion@restaurant.com">
                         </div>
 
                         <div class="mb-3">
-                            <label for="username" class="form-label">Nume utilizator (Username afișat)</label>
+                            <label for="username" class="form-label">Username (folosit la login)</label>
                             <input type="text" id="username" name="username" class="form-control" required placeholder="Ex: ionut99">
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label for="password" class="form-label">Parolă</label>
                             <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
                         </div>
 
-                        <div class="mb-4">
-                            <label for="role" class="form-label">Rol în sistem</label>
-                            <select id="role" name="role" class="form-select">
-                                <option value="USER">User (Angajat normal / Ospătar)</option>
-                                <option value="ADMIN">Admin (Manager)</option>
-                            </select>
-                        </div>
+                        <p class="text-muted small mb-4">Personalul adăugat va avea rolul de <strong>Ospătar</strong> și va putea gestiona comenzile.</p>
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-success w-100">Salvează în BD</button>

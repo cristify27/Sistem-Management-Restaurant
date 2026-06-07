@@ -64,7 +64,7 @@
     </div>
 
     <div class="actiuni-dreapta-sus">
-        <a th:if="${isLoggedIn}" href="/comenzi" class="btn btn-info text-white fw-bold">
+        <a th:if="${isLoggedIn and (isAdmin or isOspatar)}" href="/comenzi" class="btn btn-info text-white fw-bold">
             📋 Vezi Comenzi
         </a>
 

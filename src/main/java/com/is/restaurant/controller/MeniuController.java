@@ -40,10 +40,12 @@ public class MeniuController {
 
         Object loggedInUser = session.getAttribute("loggedInUser");
         Object isAdminAttribute = session.getAttribute("isAdmin");
+        Object isOspatarAttribute = session.getAttribute("isOspatar");
 
         model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("isLoggedIn", loggedInUser != null);
         model.addAttribute("isAdmin", Boolean.TRUE.equals(isAdminAttribute));
+        model.addAttribute("isOspatar", Boolean.TRUE.equals(isOspatarAttribute));
 
         return "meniu";
     }

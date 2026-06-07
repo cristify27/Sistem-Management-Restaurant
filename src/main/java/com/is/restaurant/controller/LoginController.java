@@ -26,12 +26,12 @@ public class LoginController {
 
     @PostMapping("/login")
     public String authenticate(
-            @RequestParam String email,
+            @RequestParam String username,
             @RequestParam String password,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        return utilizatorRepository.findByEmailAndPassword(email, password)
+        return utilizatorRepository.findByUsernameAndPassword(username, password)
                 .map(utilizator -> {
                     session.setAttribute("loggedInEmail", utilizator.getEmail());
                     session.setAttribute("loggedInUserId", utilizator.getId());
@@ -42,7 +42,7 @@ public class LoginController {
                     return "redirect:/";
                 })
                 .orElseGet(() -> {
-                    redirectAttributes.addFlashAttribute("loginError", "Email-ul sau parola este incorectă.");
+                    redirectAttributes.addFlashAttribute("loginError", "Username-ul sau parola este incorectă.");
                     return "redirect:/login";
                 });
     }
@@ -66,8 +66,8 @@ public class LoginController {
     public String salveazaPersonalInBD(@RequestParam String email,
                                        @RequestParam String username,
                                        @RequestParam String password,
-                                       @RequestParam String role,
-                                       HttpSession session) {
+                                       HttpSession session,
+                                       RedirectAttributes redirectAttributes) {
         Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
         if (isAdmin == null || !isAdmin) {
             return "redirect:/";
@@ -77,10 +77,11 @@ public class LoginController {
         nouUtilizator.setEmail(email);
         nouUtilizator.setUsername(username);
         nouUtilizator.setPassword(password);
-        nouUtilizator.setRole(role);
+        nouUtilizator.setRole("OSPATAR");
 
         utilizatorRepository.save(nouUtilizator);
 
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("personalAdaugat", "Personal adăugat cu succes.");
+        return "redirect:/add-personal";
     }
 }

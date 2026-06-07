@@ -25,7 +25,7 @@ public class Utilizator {
     private String password;
 
     @Column(nullable = false)
-    private String role = "USER";
+    private String role = "OSPATAR";
 
 
     public Utilizator() {}
