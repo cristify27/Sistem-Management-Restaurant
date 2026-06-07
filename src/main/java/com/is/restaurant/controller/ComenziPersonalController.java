@@ -25,11 +25,19 @@ public class ComenziPersonalController {
             return "redirect:/login";
         }
 
+        boolean isAdmin = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
+        boolean isOspatar = Boolean.TRUE.equals(session.getAttribute("isOspatar"));
+
+        if (!isAdmin && !isOspatar) {
+            return "redirect:/";
+        }
+
         List<Comanda> comenzi = comandaVizualizareRepository.findAllByOrderByIdDesc();
 
         model.addAttribute("comenzi", comenzi);
         model.addAttribute("loggedInUser", session.getAttribute("loggedInUser"));
-        model.addAttribute("isAdmin", Boolean.TRUE.equals(session.getAttribute("isAdmin")));
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("isOspatar", isOspatar);
 
         return "comenzi";
     }
@@ -41,6 +49,10 @@ public class ComenziPersonalController {
         if (session.getAttribute("loggedInUser") == null) {
             return "redirect:/login";
         }
+
+        boolean isAdmin = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
+        boolean isOspatar = Boolean.TRUE.equals(session.getAttribute("isOspatar"));
+        if (!isAdmin && !isOspatar) return "redirect:/";
 
         Comanda comanda = comandaVizualizareRepository.findById(id).orElse(null);
 
@@ -64,6 +76,10 @@ public class ComenziPersonalController {
         if (session.getAttribute("loggedInUser") == null) {
             return "redirect:/login";
         }
+
+        boolean isAdmin = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
+        boolean isOspatar = Boolean.TRUE.equals(session.getAttribute("isOspatar"));
+        if (!isAdmin && !isOspatar) return "redirect:/";
 
         Comanda comanda = comandaVizualizareRepository.findById(id).orElse(null);
 

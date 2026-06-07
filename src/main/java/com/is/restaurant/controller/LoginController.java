@@ -37,6 +37,7 @@ public class LoginController {
                     session.setAttribute("loggedInUserId", utilizator.getId());
                     session.setAttribute("loggedInUser", utilizator.getUsername());
                     session.setAttribute("isAdmin", "ADMIN".equalsIgnoreCase(utilizator.getRole()));
+                    session.setAttribute("isOspatar", "OSPATAR".equalsIgnoreCase(utilizator.getRole()));
 
                     return "redirect:/";
                 })

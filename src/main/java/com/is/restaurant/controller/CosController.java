@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,6 @@ public class CosController {
     @Autowired
     private ComandaRepository comandaRepository;
 
-    // Adaugă un produs disponibil în coșul stocat în sesiune.
-    // Clientul nu trebuie să fie autentificat pentru a adăuga produse în coș.
     @PostMapping("/adauga-cos/{id}")
     public String adaugaInCos(@PathVariable Long id, HttpSession session) {
         Produs produs = produsRepository.findById(id).orElse(null);
@@ -44,8 +43,6 @@ public class CosController {
         return "redirect:/";
     }
 
-    // Afișează pagina cu coșul de cumpărături.
-    // Clientul nu trebuie să fie autentificat pentru a vedea coșul.
     @GetMapping("/cos")
     public String afiseazaCos(HttpSession session, Model model) {
         List<Produs> cos = (List<Produs>) session.getAttribute("cos");
@@ -62,10 +59,8 @@ public class CosController {
         return "cos";
     }
 
-    // Transformă coșul din sesiune într-o comandă reală în baza de date.
-    // Clientul poate plasa comanda fără autentificare.
     @PostMapping("/plaseaza-comanda")
-    public String plaseazaComanda(HttpSession session) {
+    public String plaseazaComanda(@RequestParam String metodaPlata, HttpSession session) {
         List<Produs> cos = (List<Produs>) session.getAttribute("cos");
 
         if (cos != null && !cos.isEmpty()) {
@@ -73,6 +68,11 @@ public class CosController {
             comandaNoua.setProduse(new ArrayList<>(cos));
             comandaNoua.calculeazaTotal();
             comandaNoua.setStatus("În așteptare");
+            comandaNoua.setMetodaPlata(metodaPlata);
+
+            if (metodaPlata.equals("Cash") || metodaPlata.equals("Card")) {
+                comandaNoua.setNumarChitanta("CH-" + System.currentTimeMillis());
+            }
 
             comandaRepository.save(comandaNoua);
 
