@@ -38,4 +38,6 @@ INSERT INTO produse (denumire, categorie, pret, ingrediente, este_picant, este_v
 ('Limonadă cu căpșuni', 'Băuturi nespirtoase', 17.0, 'Lămâie, piure de căpșuni, apă, zahăr, gheață', false, true, true);
 
 INSERT INTO utilizatori (email, username, password, role) VALUES
-('admin@restaurant.null', 'ADMIN', 'adminRestaurantMagic12', 'ADMIN')
+('admin@restaurant.null', 'ADMIN', 'adminRestaurantMagic12', 'ADMIN'),
+('ospatar@restaurant.null', 'ospatar', '1234', 'OSPATAR');
+

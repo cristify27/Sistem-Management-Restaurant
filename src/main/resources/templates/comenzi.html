@@ -104,14 +104,14 @@
                 </td>
 
                 <td>
-                    <span th:if="${comanda.timpEstimare > 0}"
-                          th:text="|${comanda.timpEstimare} minute|">
-                        0 minute
-                    </span>
-
-                    <span th:unless="${comanda.timpEstimare > 0}" class="text-muted">
-                        Nesetat
-                    </span>
+                    <form th:action="@{/comenzi/{id}/timp-estimat(id=${comanda.id})}" method="post" class="d-flex gap-2 align-items-center">
+                        <input type="number" name="timpEstimare" class="form-control form-control-sm" style="width: 5rem;"
+                               min="1" placeholder="min" required
+                               th:value="${comanda.timpEstimare > 0 ? comanda.timpEstimare : ''}">
+                        <button type="submit" class="btn btn-adauga btn-sm text-nowrap">
+                            Salvează
+                        </button>
+                    </form>
                 </td>
 
                 <td>

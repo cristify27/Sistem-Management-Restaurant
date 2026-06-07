@@ -69,6 +69,28 @@ public class ComenziPersonalController {
         return "redirect:/comenzi";
     }
 
+    @PostMapping("/comenzi/{id}/timp-estimat")
+    public String seteazaTimpEstimat(@PathVariable Long id,
+                                     @RequestParam int timpEstimare,
+                                     HttpSession session) {
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/login";
+        }
+
+        boolean isAdmin = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
+        boolean isOspatar = Boolean.TRUE.equals(session.getAttribute("isOspatar"));
+        if (!isAdmin && !isOspatar) return "redirect:/";
+
+        Comanda comanda = comandaVizualizareRepository.findById(id).orElse(null);
+
+        if (comanda != null && timpEstimare > 0) {
+            comanda.setTimpEstimare(timpEstimare);
+            comandaVizualizareRepository.save(comanda);
+        }
+
+        return "redirect:/comenzi";
+    }
+
     @PostMapping("/comenzi/{id}/plata")
     public String confirmaPlataComanda(@PathVariable Long id,
                                        @RequestParam String metodaPlata,
